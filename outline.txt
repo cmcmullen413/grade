@@ -1,0 +1,49 @@
+A rough outline of the steps and functions to implement
+Loosely based on "The Git Parable" by Tom Preston-Werner
+
+Ideas that need to be fleshed out still are marked with ?
+
+1. Snapshots
+    These make a copy of the current files from the working folder in a separate, named folder
+    Allows for a previous snapshot to be pulled back up into the working folder
+    Each snapshot has a message file attached to it so specific changes can be found
+
+2. Branches
+    Snapshots no longer have to be linear, but rather point to their parent
+    This is done with a reference within their message file
+
+3. Branch Names
+    Each branch has a name associated with it
+    This is stored in a branches file that contains all names and the snapshot they point to
+    Each time a branch is updated with a new snapshot, the pointer in the file is changed
+
+4. Tags
+    Specific commits can be referenced similarly to the branch names
+    These tags are stored the same way, but in a tags file and do not get updated with new snapshots
+
+5. Distribution
+    Author names and emails are contained within the messages to place "blame"
+    Snapshot names are no longer just numbers, but instead hashed from the message contents
+
+6. Merges
+    Snapshots can specify two parents, not just one
+    These merge snapshots are used to combine the changes from both in some way
+
+7. Rewriting History
+    ?
+    Allow changes to the structure of the snapshot tree to clean up branches
+    This includes combining multiple snapshots into one and (maybe) other things
+
+8. Staging Area
+    Instead of making a snapshot of everything in the working directory, instead specific files are specified to be staged
+    Then these and only these files and changes are looked at when making a snapshot
+
+9. Diffs
+    Implement a way to see the difference between files at different points
+    This includes working vs staging, staging vs last commit, a commit vs its parent, etc.
+
+10. Eliminating Duplication
+    ?
+
+11. Compressing Blobs
+    Blobs are compressed before an SHA1 is computed, to save on storage space
