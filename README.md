@@ -56,10 +56,14 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-### TODO
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![Product Name Screen Shot][product-screenshot]
 
-Description
+Grade, or "git remade", is a git remake in the rust language.
+It implements (or will implement) all the basic features of git
+and strives to be functionally similar.
+
+The test suite for this project is written in Python to make my life easier
+and tests simpler and more readable.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -77,13 +81,27 @@ Description
 <!-- GETTING STARTED -->
 ## Getting Started
 
-### TODO
-
 ### Prerequisites
-
+To build and use grade yourself, ensure you have [Rust (1.96.0+)][Rust-url] installed,
+as well as Cargo (which should included when you install Rust)
 
 ### Installation
+1. Clone the repository
+    ```bash
+   git clone https://github.com/cmcmullen413/grade.git
+   cd grade
+   ```
+2. Build the project
+    ```bash
+   cargo build --release
+   ```
+3. The compiled binary will be located in the 'target/release/' directory.
+   This file will need to be either:
+   - Moved into the project folder that you want to version control (for simple testing and tomfoolery)
+   - or
+   - Added to you system PATH variable (to be used as a regular program just like git)
 
+In the future, if time allows, I plan to create installers that will do this process automatically
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -92,8 +110,18 @@ Description
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-### TODO
+Grade is used in the same way git is in the command line.  
+The currently implemented features are:  
+- TODO
 
+For a complete list of grade functionality for your current build, use the -h or --help flag.  
+  ```bash
+  grade --help
+  ```
+This also works for specific commands
+  ```bash
+  grade command -h
+  ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -102,11 +130,17 @@ Description
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Finish ReadMe
-  - [ ] Project Icon and Name Art
-  - [ ] Getting Started
-  - [ ] Usage
-  - [ ] Flesh Out Roadmap
+- [ ] Snapshots
+- [ ] Branches
+- [ ] Branch Names
+- [ ] Tags
+- [ ] Distribution
+- [ ] Merges
+- [ ] Rewriting History
+- [ ] Staging
+- [ ] Diffs
+- [ ] Eliminating Duplication
+- [ ] Compressing Blobs
 
 See the [open issues](https://github.com/cmcmullen413/grade/issues) for a full list of proposed features (and known issues).
 
