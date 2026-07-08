@@ -110,11 +110,14 @@ In the future, if time allows, I plan to create installers that will do this pro
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Grade is used in the same way git is in the command line.  
+Grade is used in the same way git is in the command line, with only minor differences in command names.
+The program does include automatic translation of git commands however,
+so 'grade commit' has the same functionality as 'grade submit'
+For a quick guide to convert git terms into the correct grade term, see [git_dictionary.txt](./git_dictionary.txt)  
 The currently implemented features are:  
-- TODO
+- None
 
-For a complete list of grade functionality for your current build, use the -h or --help flag.  
+For the complete list of grade functionality for your current build, use the -h or --help flag.  
   ```bash
   grade --help
   ```
