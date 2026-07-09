@@ -1,5 +1,4 @@
-use std::env;
-use std::fs::{self, File};
+use std::{env, fs};
 use std::path::{PathBuf};
 use clap::{command, Arg, ArgMatches, Command, builder::ValueParser};
 
@@ -51,48 +50,46 @@ fn main() {
     }
 }
 
-// Command handling functions
 
 /// Handles the user calling the start command
 fn handle_start(args: &ArgMatches) {
     // Get the directory or set it to the default (current working dir) if there is not
-    let project_dir = match args.get_one::<PathBuf>("dir") {
+    let dir = match args.get_one::<PathBuf>("dir") {
         Some(dir) => dir.to_owned(),
         None => env::current_dir().unwrap()
     };
 
-    // Use is_book to check if it already is a grade book
-    // If it isn't this will also give the error code to know why not
-    let code = is_book(&project_dir);
-
-    // If code == 0, then the directory is already a book
-    if code == 0 {
-        println!("Grade book already exists");
-        return
+    // First, check if the directory exists
+    match dir.exists() {
+        // If it does, check if it is a directory
+        true => match dir.is_dir() {
+            // If it is a directory, all good
+            true => (),
+            // If it isn't, print an error and return
+            false => {
+                eprintln!("Could not start grade book at provided path. Path is not a directory");
+                return
+            }
+        },
+        // If it doesn't, create it
+        false => fs::create_dir(&dir).expect("Failed to create directory to start grade book")
     }
 
-    // If code == -2, the path is not a directory
-    if code == -2 {
-        eprintln!("Could not start grade book at provided path. Path is not a directory");
-        return
-    }
+    // Now dir points to an actual directory guaranteed
+    // First check if a .grade directory already exists in the dir
 
-    // If code == 2, the .grade path is not a directory
-    if code == 2 {
-        eprintln!("Failed to start grade book. {} is not a directory", project_dir.join(".grade").display());
-        return
-    }
-
-    // If code == -1 or 1, the directory does not exist yet or the .grade directory does not exist yet
-    //  so attempt to create the one(s) that don't exist yet
-    if code == -1 || code == 1 {
-        fs::create_dir_all(project_dir.join(".grade")).expect("Failed to create one or more directories when starting grade book");
-        // Now if the .gradeignore doesn't exist, create that
-        let ignore_path = project_dir.join(".gradeignore");
-        if !ignore_path.exists() {
-            File::create(ignore_path).expect("Failed to create .gradeignore file");
+    // Get a path that points to the .grade directory
+    let grade_dir = dir.join(".grade");
+    // If it exists and is a directory, exit because the book is already started
+    // If it exists and isn't a directory throw an error
+    if grade_dir.exists() {
+        if grade_dir.is_dir() {
+            eprintln!("Failed to start grade book. {} is not a directory", grade_dir.display())
         }
+        return
     }
+    // If it doesn't exist, the grade book needs to be started
+    // TODO
 }
 
 /// Handles the user calling the submit command
@@ -100,30 +97,4 @@ fn handle_submit(args: &ArgMatches) {
     //TODO
     println!("Submit called with: ");
     println!("{:?}", args)
-}
-
-// Helper Functions
-
-/// Checks whether the passed in directory is a grade book or not
-/// Returns 0 on true and different integers on false depending on the reason
-/// -1  ->  Provided path does not exist
-/// -2  ->  Provided path is not a directory
-///  1  ->  dir/.grade does not exist
-///  2  ->  dir/.grade is not a directory
-fn is_book(dir: &PathBuf) -> i8 {
-    // Check if the path exists
-    if !dir.exists() { return -1 }
-    // And is a directory
-    if !dir.is_dir() { return -2 }
-
-    // Get the path that should point to the .grade directory
-    let grade_dir = dir.join(".grade");
-
-    // Check if the .grade path exists
-    if !grade_dir.exists() { return 1 }
-    // And is a directory
-    if !grade_dir.is_dir() { return 2 }
-
-    // Otherwise return true
-    0
 }
