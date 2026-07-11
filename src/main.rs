@@ -1,4 +1,5 @@
-use std::{env, fs};
+use std::env;
+use std::fs::{self, File};
 use std::path::{PathBuf};
 use clap::{command, Arg, ArgMatches, Command, builder::ValueParser};
 
@@ -54,15 +55,15 @@ fn main() {
 /// Handles the user calling the start command
 fn handle_start(args: &ArgMatches) {
     // Get the directory or set it to the default (current working dir) if there is not
-    let dir = match args.get_one::<PathBuf>("dir") {
+    let project_dir = match args.get_one::<PathBuf>("dir") {
         Some(dir) => dir.to_owned(),
         None => env::current_dir().unwrap()
     };
 
     // First, check if the directory exists
-    match dir.exists() {
+    match project_dir.exists() {
         // If it does, check if it is a directory
-        true => match dir.is_dir() {
+        true => match project_dir.is_dir() {
             // If it is a directory, all good
             true => (),
             // If it isn't, print an error and return
@@ -72,24 +73,32 @@ fn handle_start(args: &ArgMatches) {
             }
         },
         // If it doesn't, create it
-        false => fs::create_dir(&dir).expect("Failed to create directory to start grade book")
+        false => fs::create_dir(&project_dir).expect("Failed to create directory to start grade book")
     }
 
     // Now dir points to an actual directory guaranteed
     // First check if a .grade directory already exists in the dir
 
     // Get a path that points to the .grade directory
-    let grade_dir = dir.join(".grade");
+    let grade_dir = project_dir.join(".grade");
     // If it exists and is a directory, exit because the book is already started
     // If it exists and isn't a directory throw an error
     if grade_dir.exists() {
-        if grade_dir.is_dir() {
-            eprintln!("Failed to start grade book. {} is not a directory", grade_dir.display())
+        if !grade_dir.is_dir() {
+            eprintln!("Failed to start grade book. {} is not a directory", grade_dir.display());
+            return
         }
+        println!("Grade book already initialized");
         return
     }
+
     // If it doesn't exist, the grade book needs to be started
-    // TODO
+
+    // In the project directory, create the .grade directory and the .gradeignore file
+    fs::create_dir(grade_dir).expect("Failed to create .grade directory");
+    // If the .gradeignore doesn't already exist, create an empty one
+    let ignore_file = project_dir.join(".gradeignore");
+    File::create(ignore_file).expect("Error when attempting to create .gradeignore file");
 }
 
 /// Handles the user calling the submit command
