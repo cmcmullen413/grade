@@ -45,6 +45,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#testing">Testing</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -107,7 +108,7 @@ In the future, if time allows, I plan to create installers that will do this pro
 
 
 
-<!-- USAGE EXAMPLES -->
+<!-- USAGE INSTRUCTIONS -->
 ## Usage
 
 Grade is used in the same way git is in the command line, with only minor differences in command names.
@@ -128,6 +129,30 @@ This also works for specific commands
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- TESTING INSTRUCTIONS -->
+## Testing
+
+### Prerequisites
+To run the python tests for grade, ensure you have [Python 3.x.x][Python-url] installed
+
+### Installation
+To compile the binaries and set up the virtual enviroment to run the tests in,
+use to provided makefile in the tests folder
+   ```bash
+   make setup_test    # make setup_test_win on Windows
+   ```
+
+### Running the Tests
+To run the test suite, use the makefiles's test rule
+   ```bash
+   make test          # make test_win on Windows
+   ```
+This runs the test setup rule as well, so it is possible to skip the installation
+step. It was included here purely for clarity
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- ROADMAP -->
@@ -189,4 +214,4 @@ Project Link: [https://github.com/cmcmullen413/grade](https://github.com/cmcmull
 [Rust-Lang.org]: https://img.shields.io/badge/Rust-%23000000.svg?e&logo=rust&logoColor=white
 [Rust-url]: https://rust-lang.org
 [Python.org]: https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff
-[Python-url]: https://rust-python.org
+[Python-url]: https://python.org
