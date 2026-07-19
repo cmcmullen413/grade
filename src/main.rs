@@ -79,7 +79,7 @@ fn handle_start(args: &ArgMatches) {
 
     // If code == 2, the .grade path is not a directory
     if code == 2 {
-        eprintln!("Failed to start grade book. {} is not a directory", project_dir.join(".grade").display());
+        eprintln!("Failed to start grade book. Path to .grade is not a directory");
         return
     }
 
@@ -106,9 +106,13 @@ fn handle_submit(args: &ArgMatches) {
 
 /// Checks whether the passed in directory is a grade book or not
 /// Returns 0 on true and different integers on false depending on the reason
+///
 /// -1  ->  Provided path does not exist
+///
 /// -2  ->  Provided path is not a directory
+///
 ///  1  ->  dir/.grade does not exist
+///
 ///  2  ->  dir/.grade is not a directory
 fn is_book(dir: &PathBuf) -> i8 {
     // Check if the path exists
