@@ -147,8 +147,6 @@ To run the test suite, use the makefiles's test rule
    ```bash
    make test          # make test_win on Windows
    ```
-This runs the test setup rule as well, so it is possible to skip the installation
-step. It was included here purely for clarity
 
 
 
