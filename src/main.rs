@@ -1,6 +1,6 @@
 use std::env;
 use std::fs::{self, File};
-use std::path::{PathBuf};
+use std::path::{Path, PathBuf};
 use clap::{command, Arg, ArgMatches, Command, builder::ValueParser};
 
 fn main() {
@@ -46,8 +46,19 @@ fn main() {
     // Depending on which subcommand was used, call the correct function with its arguments
     match matches.subcommand() {
         Some(("start", args)) => handle_start(args),
-        Some(("submit", args)) => handle_submit(args),
-        _ => ()
+        // If the subcommand was not start, first verify that the working directory is within a grade book
+        _ => {
+            // If the working dir is not within a book, print an error message and exit
+            if !is_within_book(&env::current_dir().unwrap()) {
+                eprintln!("Not a grade book (or any of this parent directories)");
+                return
+            }
+            // Otherwise, call the correct function
+            match matches.subcommand() {
+                Some(("submit", args)) => handle_submit(args),
+                _ => ()
+            }
+        }
     }
 }
 
@@ -114,7 +125,7 @@ fn handle_submit(args: &ArgMatches) {
 ///  1  ->  dir/.grade does not exist
 ///
 ///  2  ->  dir/.grade is not a directory
-fn is_book(dir: &PathBuf) -> i8 {
+fn is_book(dir: &Path) -> i8 {
     // Check if the path exists
     if !dir.exists() { return -1 }
     // And is a directory
@@ -130,4 +141,19 @@ fn is_book(dir: &PathBuf) -> i8 {
 
     // Otherwise return true
     0
+}
+
+/// Checks whether the passed in directory is a grade book
+/// or exists as a subdirectory within a grade book
+fn is_within_book(dir: &Path) -> bool {
+    // Check if the passed directory is a book
+    // If it is, return true
+    if is_book(&dir) == 0 { return true }
+
+    // Get the path's parent
+    let parent = dir.parent();
+    // If it is None return false, because it has no more parents to check
+    if parent == None { return false }
+    // Otherwise recursively call this function on that directory's parent
+    return is_within_book(&parent.unwrap())
 }
