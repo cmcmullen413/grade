@@ -1,12 +1,17 @@
-use std::env;
-use std::fs::{self, File};
-use std::path::{Path, PathBuf};
+use std::{
+    env,
+    fs::{self, File},
+    path::{Path, PathBuf},
+    process::{exit}
+};
 use clap::{command, Arg, ArgMatches, Command, builder::ValueParser};
+use chksum_sha1 as sha1;
 
 fn main() {
     // Define and get the command line arguments and commands
     let matches = command!()
         // Help message about the program itself
+        // TODO
         .about("TODO Description about the program")
         // Prints the help message by default if no arguments are supplied
         .arg_required_else_help(true)
@@ -51,7 +56,7 @@ fn main() {
             // If the working dir is not within a book, print an error message and exit
             if !is_within_book(&env::current_dir().unwrap()) {
                 eprintln!("Not a grade book (or any of this parent directories)");
-                return
+                exit(1)
             }
             // Otherwise, call the correct function
             match matches.subcommand() {
@@ -108,9 +113,35 @@ fn handle_start(args: &ArgMatches) {
 
 /// Handles the user calling the submit command
 fn handle_submit(args: &ArgMatches) {
-    //TODO
-    println!("Submit called with: ");
-    println!("{:?}", args)
+    // Navigate back to the parent directory that contains the .grade directory
+
+    // If a .message file doesn't exist to copy over,
+    //  create one with the passed in message
+    if !fs::exists(".message").unwrap() {
+        let message = args.get_one::<String>("message");
+        // Throw an error if there isn't a .message file and there is no passed in message
+        // TODO: Make this create the file and prompt the user somehow. Could be like git does with an editor
+        match message {
+            None => {
+                eprintln!("No submit message provided. Either supply the --message (-m) flag or create a .message file in the project root");
+                return
+            },
+            Some(message) => {
+
+            }
+        }
+    }
+
+    // Create a temporary directory in .grade to copy files into
+
+    // Copy every file that isn't the .grade or isn't in the .gitignore
+
+    // Remove the .message file
+
+    // Hash the folder to get what it's name should be
+
+    // Rename the folder to the hash
+    // HINT: Use fs::rename
 }
 
 // Helper Functions
@@ -156,4 +187,10 @@ fn is_within_book(dir: &Path) -> bool {
     if parent == None { return false }
     // Otherwise recursively call this function on that directory's parent
     return is_within_book(&parent.unwrap())
+}
+
+/// Gets the sha1 hash of the given directory and returns it as a String
+fn get_dir_hash(dir: &Path) -> String {
+    let hash = sha1::chksum(dir).expect("Failed to hash directory");
+    hash.to_hex_lowercase()
 }
